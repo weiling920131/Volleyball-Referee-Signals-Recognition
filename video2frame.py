@@ -30,12 +30,14 @@ def extract_frames(video_path, output_dir, frame_interval=1):
 
 if __name__ == "__main__":
     # Example usage
-    videos_dir = "/path/to/video.mp4"
-    output_dir = "./dataset"
+    dataset_dir = "./dataset"
     frame_interval = 1
     cnt = 1
-    for video_path in os.listdir(videos_dir):
-        output_dir = os.path.join(output_dir, f"w{cnt}")
-        extract_frames(video_path, output_dir, frame_interval)
-        print("done")
-        cnt += 1
+    for dir in os.listdir(dataset_dir):
+        for video in os.listdir(os.path.join(dataset_dir, dir)):
+            video_path = os.path.join(dataset_dir, dir, video)
+            if (not os.path.isdir(video_path)) or (video[0] != "r"):
+                continue
+            for v in os.listdir(video_path):
+                extract_frames(os.path.join(video_path, v), video_path, frame_interval)
+                print("done")
