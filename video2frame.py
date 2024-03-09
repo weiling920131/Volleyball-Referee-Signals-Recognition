@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import os
 
-def extract_frames(video_path, output_dir, frame_interval=1):
+def extract_frames(video_path, output_dir):
     # Open the video file
     video = cv2.VideoCapture(video_path)
     
@@ -10,20 +10,25 @@ def extract_frames(video_path, output_dir, frame_interval=1):
     os.makedirs(output_dir, exist_ok=True)
     
     # Initialize frame counter
-    frame_count = 0
+    cnt = 1
+    frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT) / 30)
     
     # Read the first frame
     success, frame = video.read()
     
     while success:
         # Save the frame as an image
+        # if cnt < frame_count:
+        #     success, frame = video.read()
+        #     continue
+
         output_path = os.path.join(output_dir, f"frame_{frame_count}.jpg")
         cv2.imwrite(output_path, frame)
         
         # Read the next frame
-        for _ in range(frame_interval):
+        for _ in range(frame_count):
             success, frame = video.read()
-            frame_count += 1
+            cnt += 1
             if not success:
                 break
 
@@ -31,13 +36,12 @@ def extract_frames(video_path, output_dir, frame_interval=1):
 if __name__ == "__main__":
     # Example usage
     dataset_dir = "./dataset"
-    frame_interval = 1
-    cnt = 1
-    for dir in os.listdir(dataset_dir):
-        for video in os.listdir(os.path.join(dataset_dir, dir)):
-            video_path = os.path.join(dataset_dir, dir, video)
-            if (not os.path.isdir(video_path)) or (video[0] != "r"):
-                continue
-            for v in os.listdir(video_path):
-                extract_frames(os.path.join(video_path, v), video_path, frame_interval)
-                print("done")
+    for catagory in os.listdir(dataset_dir):
+        cnt = 1
+        catagory_path = os.path.join(dataset_dir, catagory)
+        for video in catagory_path:
+            video_path = os.path.join(catagory_path, video)
+            extract_frames(video_path, os.path.join(video_path, f"{catagory}_{cnt}"))
+            print("done")
+            cnt += 1
+
