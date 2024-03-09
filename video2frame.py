@@ -12,17 +12,21 @@ def extract_frames(video_path, output_dir):
     # Initialize frame counter
     cnt = 1
     frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT) / 30)
+    if frame_count == 0:
+        frame_count = 1
     
     # Read the first frame
     success, frame = video.read()
     
+    last_frame = frame
     while success:
         # Save the frame as an image
         # if cnt < frame_count:
         #     success, frame = video.read()
         #     continue
-
-        output_path = os.path.join(output_dir, f"frame_{frame_count}.jpg")
+        if cnt > 30:
+            break
+        output_path = os.path.join(output_dir, f"frame_{cnt}.jpg")
         cv2.imwrite(output_path, frame)
         
         # Read the next frame
@@ -31,6 +35,11 @@ def extract_frames(video_path, output_dir):
             cnt += 1
             if not success:
                 break
+            last_frame = frame
+    if cnt < 30:
+        for i in range(cnt, 31):
+            output_path = os.path.join(output_dir, f"frame_{i}.jpg")
+            cv2.imwrite(output_path, last_frame)
 
 
 if __name__ == "__main__":
@@ -39,9 +48,9 @@ if __name__ == "__main__":
     for catagory in os.listdir(dataset_dir):
         cnt = 1
         catagory_path = os.path.join(dataset_dir, catagory)
-        for video in catagory_path:
+        for video in os.listdir(catagory_path):
             video_path = os.path.join(catagory_path, video)
-            extract_frames(video_path, os.path.join(video_path, f"{catagory}_{cnt}"))
+            extract_frames(video_path, os.path.join(catagory_path, f"{catagory}_{cnt}"))
             print("done")
             cnt += 1
 
