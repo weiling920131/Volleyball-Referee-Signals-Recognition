@@ -27,7 +27,7 @@ def extract_frames(video_path, output_dir):
             if not success:
                 break
             last_frame = frame
-    if cnt < 30:
+    if cnt <= 30:
         for i in range(cnt, 31):
             output_path = os.path.join(output_dir, f"frame_{i}.jpg")
             cv2.imwrite(output_path, last_frame)
