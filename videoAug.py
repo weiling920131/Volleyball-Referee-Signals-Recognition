@@ -10,40 +10,30 @@ for category in os.listdir(dataset_dir):
     category_path = os.path.join(dataset_dir, category)
     for video in os.listdir(category_path):
         video_path = os.path.join(category_path, video)
-        if video_path.is_dir():
+        if not os.path.isdir(video_path):
             continue
+        
+        folder_name = f"{category}_{len([file for file in os.listdir(category_path)])}"
+        os.makedirs(os.path.join(category_path, folder_name), exist_ok=True)
+        frames = [] 
+        for frame in os.listdir(video_path):
+            frame_path = os.path.join(video_path, frame)
+            img = cv2.imread(frame_path, cv2.IMREAD_COLOR)
+            frames.append(img)
 
-        # loop the original video
-        cap = cv2.VideoCapture(video_path)
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
-        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        frame_size = (width, height)
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        frames = []
-        while(cap.isOpened()):
-            ret, frame = cap.read()
-            if ret == True:
-                frames.append(frame)
-            else:
-                break
-        cap.release()
         seq = va.Sequential([sometimes(va.InvertColor()),
-                            sometimes(va.Salt()),
-                            sometimes(va.Pepper()), 
-                            va.HorizontalFlip(),
-                            va.RandomRotate(degrees=(-10, 10)),
-                            va.RandomTranslate(x=(-20, 20), y=(-20, 20)),
-                            va.RandomBrightness((0.5, 2.0)),
-                            va.RandomContrast((0.5, 2.0))])
+                        sometimes(va.Salt()),
+                        sometimes(va.Pepper()),
+                        sometimes(va.HorizontalFlip()),
+                        sometimes(va.RandomShear(-0.1, 0.1)),
+                        sometimes(va.RandomTranslate(5, 5))])
         #augment the frames
-        video_aug = seq(frames)
+        # print(img[0].shape)
+        img_aug = seq(frames)
+        for frame in img_aug:
+            # output the video
+            cv2.imwrite(os.path.join(os.path.join(category_path, folder_name), f"frame_{str(len([file for file in os.listdir(os.path.join(category_path, folder_name))])).zfill(3)}.jpg"), frame)
 
-        # output the video
-        out = cv2.VideoWriter(os.path.join(category_path, f"{len([file for file in os.listdir(category_path)])}.mp4v"), fourcc, fps, frame_size)
-        for frame in video_aug:
-            out.write(frame)
-        out.release()
 
 
     
