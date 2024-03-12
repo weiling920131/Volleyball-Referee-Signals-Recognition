@@ -13,12 +13,13 @@ def extract_frames(video_path, output_dir):
         frame_count = 1
 
     success, frame = video.read()
+    if success: frame = cv2.resize(frame, (160, 90))
     
     last_frame = frame
     while success:
         if cnt > 30:
             break
-        output_path = os.path.join(output_dir, f"frame_{cnt}.jpg")
+        output_path = os.path.join(output_dir, f"frame_{str(cnt).zfill(3)}.jpg")
         cv2.imwrite(output_path, frame)
         cnt += 1
         
@@ -26,10 +27,12 @@ def extract_frames(video_path, output_dir):
             success, frame = video.read()
             if not success:
                 break
+            frame = cv2.resize(frame, (160, 90))
             last_frame = frame
+
     if cnt <= 30:
         for i in range(cnt, 31):
-            output_path = os.path.join(output_dir, f"frame_{i}.jpg")
+            output_path = os.path.join(output_dir, f"frame_{str(i).zfill(3)}.jpg")
             cv2.imwrite(output_path, last_frame)
 
 
@@ -40,7 +43,7 @@ if __name__ == "__main__":
         catagory_path = os.path.join(dataset_dir, catagory)
         for video in os.listdir(catagory_path):
             video_path = os.path.join(catagory_path, video)
-            extract_frames(video_path, os.path.join(catagory_path, f"{catagory}_{cnt}"))
+            extract_frames(video_path, os.path.join(catagory_path, f"{catagory}_{str(cnt).zfill(3)}"))
             print("done")
             cnt += 1
 
