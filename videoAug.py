@@ -20,13 +20,10 @@ for category in os.listdir(dataset_dir):
             frame_path = os.path.join(video_path, frame)
             img = cv2.imread(frame_path, cv2.IMREAD_COLOR)
             frames.append(img)
-
-        seq = va.Sequential([sometimes(va.InvertColor()),
-                        sometimes(va.Salt()),
-                        sometimes(va.Pepper()),
-                        sometimes(va.HorizontalFlip()),
-                        sometimes(va.RandomShear(-0.1, 0.1)),
-                        sometimes(va.RandomTranslate(5, 5))])
+        
+        seq = va.Sequential([sometimes(va.HorizontalFlip()),
+                            sometimes(va.RandomShear(-0.1, 0.1)),
+                            sometimes(va.RandomTranslate(5, 5))])
         #augment the frames
         # print(img[0].shape)
         img_aug = seq(frames)
