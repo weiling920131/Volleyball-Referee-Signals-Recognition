@@ -2,19 +2,25 @@ import os
 import cv2
 import numpy as np
 import vidaug.augmentors as va
+import shutil
 
 dataset_dir = './dataset'
+output_dir = './dataset_aug'
+shutil.copytree(dataset_dir, output_dir)
 sometimes = lambda aug: va.Sometimes(0.5, aug) # Used to apply augmentor with 50% probability
 
-for category in os.listdir(dataset_dir):
-    category_path = os.path.join(dataset_dir, category)
+for category in os.listdir(output_dir):
+    category_path = os.path.join(output_dir, category)
     for video in os.listdir(category_path):
         video_path = os.path.join(category_path, video)
         if not os.path.isdir(video_path):
             continue
         
-        for _ in range(50):
-            folder_name = f"{category}_{str(len([file for file in os.listdir(category_path) if os.path.isdir(os.path.join(category_path, file))])+1).zfill(3)}"
+        while True:
+            folder_i = len([file for file in os.listdir(category_path) if os.path.isdir(os.path.join(category_path, file))]) + 1
+            if folder_i > 1000:
+                break
+            folder_name = f"{category}_{str(folder_i).zfill(4)}"
             os.makedirs(os.path.join(category_path, folder_name), exist_ok=True)
             frames = [] 
             for frame in os.listdir(video_path):
@@ -22,10 +28,7 @@ for category in os.listdir(dataset_dir):
                 img = cv2.imread(frame_path, cv2.IMREAD_COLOR)
                 frames.append(img)
 
-            seq = va.Sequential([sometimes(va.InvertColor()),
-                            sometimes(va.Salt()),
-                            sometimes(va.Pepper()),
-                            sometimes(va.HorizontalFlip()),
+            seq = va.Sequential([sometimes(va.HorizontalFlip()),
                             sometimes(va.RandomShear(-0.1, 0.1)),
                             sometimes(va.RandomTranslate(5, 5))])
             #augment the frames
@@ -33,7 +36,8 @@ for category in os.listdir(dataset_dir):
             img_aug = seq(frames)
             for frame in img_aug:
                 # output the video
-                cv2.imwrite(os.path.join(os.path.join(category_path, folder_name), f"frame_{str(len([file for file in os.listdir(os.path.join(category_path, folder_name))])).zfill(3)}.jpg"), frame)
+                frame_i = len([file for file in os.listdir(os.path.join(category_path, folder_name))])
+                cv2.imwrite(os.path.join(os.path.join(category_path, folder_name), f"frame_{str(frame_i).zfill(3)}.jpg"), frame)
 
 
 
