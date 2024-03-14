@@ -11,14 +11,17 @@ sometimes = lambda aug: va.Sometimes(0.5, aug) # Used to apply augmentor with 50
 
 for category in os.listdir(output_dir):
     category_path = os.path.join(output_dir, category)
-    for video in os.listdir(category_path):
-        video_path = os.path.join(category_path, video)
-        if not os.path.isdir(video_path):
-            continue
-        
-        while True:
+    done = False
+    while not done:
+        for video in os.listdir(category_path):
+            video_path = os.path.join(category_path, video)
+            if not os.path.isdir(video_path):
+                continue
+            
             folder_i = len([file for file in os.listdir(category_path) if os.path.isdir(os.path.join(category_path, file))]) + 1
             if folder_i > 1000:
+                done = True
+                print(category)
                 break
             folder_name = f"{category}_{str(folder_i).zfill(4)}"
             os.makedirs(os.path.join(category_path, folder_name), exist_ok=True)
