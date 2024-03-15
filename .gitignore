@@ -1,5 +1,8 @@
-*.mp4
-*.MOV
-*.mov
-*.mp4v
 dataset/
+dataset_aug/
+train/
+train_aug/
+val/
+val_aug/
+Conv3D.ipynb
+*.csv

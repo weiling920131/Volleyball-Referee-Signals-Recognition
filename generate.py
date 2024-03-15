@@ -3,13 +3,13 @@ import random
 import shutil
 import csv
 
-root_path = ".\\dataset"
+root_path = ".\\dataset_aug"
 
-new_train_path = ".\\train"
-new_val_path = ".\\val"
+new_train_path = ".\\train_aug"
+new_val_path = ".\\val_aug"
 
-train_csv_path = ".\\train.csv"
-val_csv_path = ".\\val.csv"
+train_csv_path = ".\\train_aug.csv"
+val_csv_path = ".\\val_aug.csv"
 
 train_csv = open(train_csv_path, "w", newline='')
 val_csv = open(val_csv_path, "w", newline='')
