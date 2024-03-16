@@ -19,10 +19,11 @@ for category in os.listdir(output_dir):
                 continue
             
             folder_i = len([file for file in os.listdir(category_path) if os.path.isdir(os.path.join(category_path, file))]) + 1
-            if folder_i > 1000:
+            if folder_i > 200:
                 done = True
                 print(category)
                 break
+            
             folder_name = f"{category}_{str(folder_i).zfill(4)}"
             os.makedirs(os.path.join(category_path, folder_name), exist_ok=True)
             frames = [] 

@@ -43,7 +43,9 @@ if __name__ == "__main__":
         catagory_path = os.path.join(dataset_dir, catagory)
         for video in os.listdir(catagory_path):
             video_path = os.path.join(catagory_path, video)
-            extract_frames(video_path, os.path.join(catagory_path, f"{catagory}_{str(cnt).zfill(3)}"))
+            if os.path.isdir(video_path):
+                continue
+            extract_frames(video_path, os.path.join(catagory_path, f"{catagory}_{str(cnt).zfill(4)}"))
             print("done")
             cnt += 1
 
