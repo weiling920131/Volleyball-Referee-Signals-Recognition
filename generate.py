@@ -4,13 +4,13 @@ import shutil
 import csv
 
 def generate(k):
-    root_path = './dataset_aug'
+    root_path = './dataset_aug_ori'
 
     # new_train_path = './train'
     # new_val_path = './val'
 
-    train_csv_path = f'./train_{k}.csv'
-    val_csv_path = f'./val_{k}.csv'
+    train_csv_path = f'./train_ori_{k}.csv'
+    val_csv_path = f'./val_ori_{k}.csv'
 
     train_csv = open(train_csv_path, 'w', newline='')
     val_csv = open(val_csv_path, 'w', newline='')
