@@ -36,11 +36,10 @@ for category in os.listdir(output_dir):
                             sometimes(va.RandomShear(-0.1, 0.1)),
                             sometimes(va.RandomTranslate(5, 5))])
             #augment the frames
-            # print(img[0].shape)
             img_aug = seq(frames)
             for frame in img_aug:
                 # output the video
-                frame_i = len([file for file in os.listdir(os.path.join(category_path, folder_name))])
+                frame_i = len([file for file in os.listdir(os.path.join(category_path, folder_name))]) + 1
                 cv2.imwrite(os.path.join(os.path.join(category_path, folder_name), f"frame_{str(frame_i).zfill(3)}.jpg"), frame)
 
 
