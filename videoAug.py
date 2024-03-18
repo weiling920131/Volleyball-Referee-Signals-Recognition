@@ -3,8 +3,8 @@ import cv2
 import vidaug.augmentors as va
 import shutil
 
-dataset_dir = './dataset'
-output_dir = './dataset_aug'
+dataset_dir = './dataset_ori'
+output_dir = './dataset_aug_ori'
 shutil.copytree(dataset_dir, output_dir)
 sometimes = lambda aug: va.Sometimes(0.5, aug) # Used to apply augmentor with 50% probability
 
